@@ -1,8 +1,7 @@
-const _ = require('underscore');
+const activeUsers = require("./end_points/activeUsers").activeUsers;
+const bidShare = require("./end_points/bidSharing").bidShare;
 
 const server = require('http').createServer();
-const pages = {
-};
 
 const io = require('socket.io')(server, {
   path: '',
@@ -13,28 +12,7 @@ const io = require('socket.io')(server, {
   cookie: false
 });
 
-const activeUsers = io.of('/activeusers');
-
-activeUsers.on('connect', (socket) => {
-    console.log("connected");
-    const uri = socket.request.headers.referer;
-    const address = socket.handshake.address;
-
-    if(pages[uri]){
-        pages[uri].push(address)
-    }else{
-        pages[uri] = [address];
-    }
-
-    const activeUsersCount = _.uniq(pages[uri]).length - 1;
-    console.log(pages[uri]);
-    console.log(`${uri}: ${activeUsersCount}`);
-
-    socket.emit('stateChanged', {connectedUsers: activeUsersCount});
-
-    socket.on('disconnect', () => {
-        pages[uri] = _.without(pages[uri], address);
-    });
-});
+activeUsers(io);
+bidShare(io);
 
 server.listen(3000);
