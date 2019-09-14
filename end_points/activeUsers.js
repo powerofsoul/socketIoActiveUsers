@@ -20,7 +20,7 @@ function activeUsers(io){
         console.log(pages[uri]);
         console.log(`${uri}: ${activeUsersCount}`);
 
-        socket.emit('stateChanged', {connectedUsers: activeUsersCount});
+        activeUsers.emit('stateChanged', {connectedUsers: activeUsersCount});
 
         socket.on('disconnect', () => {
             pages[uri] = _.without(pages[uri], address);
