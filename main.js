@@ -26,7 +26,7 @@ activeUsers.on('connect', (socket) => {
         pages[uri] = [address];
     }
 
-    const activeUsersCount = _.uniq(pages[uri]) - 1;
+    const activeUsersCount = _.uniq(pages[uri]).length - 1;
     console.log(pages[uri]);
     console.log(`${uri}: ${activeUsersCount}`);
 
