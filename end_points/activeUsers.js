@@ -5,6 +5,11 @@ function activeUsers(io){
     const pages = {
     };
     
+    function countUsers(uri){
+        const activeUsersCount = _.uniq(pages[uri]).length - 1;
+
+        return activeUsersCount;
+    }
     activeUsers.on('connect', (socket) => {
         console.log("connected");
         const uri = socket.request.headers.referer;
@@ -16,14 +21,11 @@ function activeUsers(io){
             pages[uri] = [address];
         }
 
-        const activeUsersCount = _.uniq(pages[uri]).length - 1;
-        console.log(pages[uri]);
-        console.log(`${uri}: ${activeUsersCount}`);
-
-        activeUsers.emit('stateChanged', {connectedUsers: activeUsersCount});
+        activeUsers.emit('stateChanged', {connectedUsers: countUsers(uri)});
 
         socket.on('disconnect', () => {
             pages[uri] = _.without(pages[uri], address);
+            activeUsers.emit('stateChagned', {connectedUsers: countUsers(uri)});
         });
     });
 }
