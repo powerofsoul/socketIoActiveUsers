@@ -16,6 +16,7 @@ const io = require('socket.io')(server, {
 const activeUsers = io.of('/activeusers');
 
 activeUsers.on('connect', (socket) => {
+    console.log("connected");
     const uri = socket.request.headers.referer;
     const address = socket.handshake.address;
 
